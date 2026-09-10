@@ -1,5 +1,23 @@
+function resolveSiteUrl(): string {
+  const raw = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+
+  if (raw) {
+    try {
+      return new URL(raw).origin;
+    } catch {
+      return `https://${raw.replace(/^\/+/, "")}`;
+    }
+  }
+
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+
+  return "http://localhost:3000";
+}
+
 export const siteConfig = {
-  name: "Dulce & Vida",
+  name: process.env.NEXT_PUBLIC_SITE_NAME?.trim() || "Dulce & Vida",
   tagline: "Productos Naturales",
   logo: "/brand/logo-dulce-vida.png",
   icon: "/brand/icons/icon-32.png",
@@ -14,7 +32,7 @@ export const siteConfig = {
   },
   description:
     "Productos naturales premium del Perú. Panela orgánica, Sal de Maras y selección artesanal con calidad, origen y tradición.",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  url: resolveSiteUrl(),
   ogImage: "/og-image.jpg",
   links: {
     instagram: "https://www.instagram.com/_ceviche777/",
